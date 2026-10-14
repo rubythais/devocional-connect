@@ -43,9 +43,10 @@ body::after{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 .stage{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;max-width:1080px;margin:0 auto;padding:18px clamp(16px,4vw,44px) 16px}
-.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line);
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line);
   font-family:var(--cond);font-weight:700;font-size:clamp(14px,1.8vw,19px);letter-spacing:.04em;color:var(--yel);text-transform:uppercase}
-.top em,.foot em{font-family:var(--script);font-style:normal;text-transform:none;font-weight:400;font-size:1.45em;letter-spacing:0;margin-right:.15em}
+.top>span{white-space:nowrap;line-height:1;display:inline-flex;align-items:baseline}
+.top em,.foot em{font-family:var(--script);font-style:normal;text-transform:none;font-weight:400;font-size:1.45em;letter-spacing:0;margin-right:.15em;line-height:1}
 .top .mid{color:var(--soft);font-weight:600}
 main{flex:1;display:flex;align-items:center;justify-content:center;padding:28px 0}
 .screen{width:100%;max-width:860px}
@@ -121,6 +122,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:28px 
 .desafio{max-width:34em;margin:26px auto 0;text-align:left;border:2px solid var(--yel);border-radius:18px;padding:18px 22px}
 .desafio h3{margin:0 0 4px;font-family:var(--script);font-weight:400;color:var(--yel);font-size:44px;line-height:1.1}
 .desafio p{margin:0}
+.desafio .ref{display:block;margin-top:8px;font-family:var(--cond);font-weight:700;color:var(--yel);font-size:17px}
 .reveal{animation:reveal 1.4s cubic-bezier(.2,.8,.2,1) both}
 @keyframes reveal{from{opacity:0;filter:blur(14px);letter-spacing:.2em}to{opacity:1;filter:blur(0);letter-spacing:-.01em}}
 
@@ -135,6 +137,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:28px 
 @media (max-width:620px){
   .lt .opt{font-size:26px;padding:18px 10px}
   .top .mid,.hint{display:none}
+  .top{font-size:13px;letter-spacing:.02em;gap:8px}
   body{font-size:17px}
 }
 @media (prefers-reduced-motion: reduce){
@@ -182,7 +185,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:28px 
       <p class="score" id="score"></p>
       <div class="desafio">
         <h3>Desafio</h3>
-        <p>Antes de sair, procure alguém com quem você ainda tem pouca intimidade. Ore por essa pessoa e pergunte como você pode servi-la nesta conferência.</p>
+        <div id="desafio"></div>
       </div>
       <p class="score">Tira um print desta tela e manda no grupo dos voluntários!</p>
       <button class="btn ghosty" id="bAgain">Jogar de novo</button>
@@ -321,6 +324,26 @@ function finish(){
   $("bAgain").focus();
 }
 function start(){ ph=0; it=0; done=0; firstTry=0; pts=0; $("pts").textContent="0 pontos"; setBar(); show("sGame"); phaseIntro(); }
+
+const DESAFIOS = [
+  { t:"Mande hoje uma mensagem para alguém do ministério que você não vê há um tempo e pergunte como pode orar por essa pessoa.", ref:"Tiago 5:16" },
+  { t:"Ore pelo nome de três voluntários que vão servir com você na conferência.", ref:"Filipenses 1:3-4" },
+  { t:"Se existe alguém com quem você está chateado, dê o primeiro passo hoje: uma mensagem, uma conversa, um perdão.", ref:"Efésios 4:32" },
+  { t:"Na conferência, sente perto de alguém que você ainda não conhece e puxe conversa.", ref:"Romanos 15:7" },
+  { t:"Escreva um elogio sincero para alguém do grupo e mande no privado.", ref:"1 Tessalonicenses 5:11" },
+  { t:"Durante a conferência, ofereça ajuda numa tarefa que não é sua.", ref:"Gálatas 6:2" },
+  { t:"Antes de reclamar de qualquer coisa hoje, agradeça a Deus por uma pessoa da sua igreja.", ref:"Efésios 5:20" },
+  { t:"Chame alguém para orar com você por cinco minutos, por ligação ou pessoalmente.", ref:"Mateus 18:19-20" },
+  { t:"Pergunte a um irmão como ele está de verdade e escute sem pressa.", ref:"Romanos 12:15" },
+  { t:"Lembre de alguém que te ajudou na fé e mande uma mensagem agradecendo.", ref:"Filipenses 1:3" },
+  { t:"Ore pelo nome de uma igreja convidada para a conferência.", ref:"João 17:21" },
+  { t:"Hoje, fale bem de alguém pelas costas.", ref:"Efésios 4:29" },
+  { t:"Mande para alguém do grupo um louvor que tem falado com você e diga por quê.", ref:"Efésios 5:19" },
+  { t:"Escolha alguém que vai servir num setor diferente do seu e pergunte como você pode ajudar.", ref:"1 Coríntios 12:25-26" },
+  { t:"Peça perdão a alguém por uma palavra ou atitude que você sabe que machucou.", ref:"Mateus 5:23-24" }
+];
+const D = DESAFIOS[Math.floor(Math.random()*DESAFIOS.length)];
+$("desafio").innerHTML = `<p>${D.t}</p><span class="ref">${D.ref}</span>`;
 
 $("bStart").onclick = start;
 $("bAgain").onclick = start;
