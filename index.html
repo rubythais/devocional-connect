@@ -133,6 +133,9 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:28px 
 .mini{width:96px;height:18px;border:2px solid var(--yel);border-radius:999px;padding:3px}
 .mini>i{display:block;height:100%;width:0;background:var(--yel);border-radius:999px;transition:width .7s}
 .hint{color:var(--soft);font-family:var(--body);text-transform:none;letter-spacing:0;font-weight:400;font-size:14px}
+.snd{display:inline-flex;align-items:center;gap:6px;background:transparent;border:2px solid var(--yel);color:var(--yel);border-radius:999px;padding:5px 12px;font-family:var(--cond);font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer}
+.snd:hover{background:rgba(235,227,97,.1)}
+.snd[aria-pressed="false"]{opacity:.6}
 
 @media (max-width:620px){
   .lt .opt{font-size:26px;padding:18px 10px}
@@ -194,6 +197,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:28px 
 
   <footer class="foot">
     <span class="as1"><b>AS1</b><span class="mini"><i id="miniFill"></i></span></span>
+    <button class="snd" id="bSnd" type="button" aria-pressed="true" aria-label="Som ligado"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path id="sndWaves" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path id="sndOff" d="M16 9l5 6M21 9l-5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"/></svg><span id="sndLabel">Som</span></button>
     
     <span>Efésios <em>cinco</em></span>
   </footer>
@@ -260,14 +264,14 @@ function setBar(){
   $("pct").textContent = p+"%"; $("bar").setAttribute("aria-valuenow", p);
 }
 function phaseIntro(){
-  mode="phase";
+  mode="phase"; if(ph>0) Sound.phase();
   const P = PHASES[ph];
   $("qCard").classList.add("hidden");
   const card = $("phaseCard"); card.classList.remove("hidden");
   card.innerHTML = `<p class="step">Etapa ${ph+1} de ${PHASES.length}</p>
     <h2>${P.nome}</h2><span class="ref">${P.ref}</span><p>${P.intro}</p>
     <button class="btn" id="bPhase">Começar etapa</button>`;
-  $("bPhase").onclick = renderQ; $("bPhase").focus();
+  $("bPhase").onclick = ()=>{ Sound.click(); renderQ(); }; $("bPhase").focus();
 }
 function renderQ(){
   mode="q"; answered=false; missed=false; misses=0;
@@ -294,7 +298,7 @@ function answer(b){
   const P = PHASES[ph], Q = P.itens[it];
   const right = P.tipo==="lt" ? b.dataset.v===Q.c : Number(b.dataset.v)===Q.c;
   if(right){
-    answered = true; b.classList.add("ok");
+    answered = true; b.classList.add("ok"); Sound.correct();
     document.querySelectorAll("#opts .opt").forEach(o=>o.disabled=true);
     if(!missed) firstTry++;
     const gain = misses===0 ? 10 : (misses===1 ? 6 : 3); pts += gain; $("pts").textContent = pts+" pontos";
@@ -304,7 +308,7 @@ function answer(b){
     $("bNext").textContent = last ? "Ver o final" : (it===P.itens.length-1 ? "Próxima etapa" : "Próxima");
     $("bNext").classList.remove("hidden"); $("bNext").focus();
   } else {
-    missed = true; misses++; b.classList.add("no"); b.disabled = true;
+    missed = true; misses++; b.classList.add("no"); b.disabled = true; Sound.wrong();
     $("fb").innerHTML = `<div class="fb try"><h3>Quase</h3><p>Releia com calma e tente de novo.</p></div>`;
   }
 }
@@ -315,7 +319,7 @@ function next(){
   finish();
 }
 function finish(){
-  mode="end"; show("sEnd");
+  mode="end"; show("sEnd"); Sound.final();
   const t = $("sEnd").querySelector(".reveal"); t.classList.remove("reveal"); void t.offsetWidth; t.classList.add("reveal");
   const rest = TOTAL-firstTry;
   $("score").innerHTML = `<b class="pts">${pts} de ${TOTAL*10} pontos</b>` + (rest===0
@@ -324,6 +328,142 @@ function finish(){
   $("bAgain").focus();
 }
 function start(){ ph=0; it=0; done=0; firstTry=0; pts=0; $("pts").textContent="0 pontos"; setBar(); show("sGame"); phaseIntro(); }
+
+const Sound = (() => {
+  let ctx=null, master, music, keys, noise, sfx, playing=false, nextBar=0, bar=0, muted=false;
+  try{ muted = localStorage.getItem("ef5-mudo")==="1"; }catch(e){}
+  const BEAT=60/76, BAR=BEAT*4, VOL=.9;
+  const mf = m => 440*Math.pow(2,(m-69)/12);
+  const AB9=[55,58,60,63], CM9=[58,62,63,67], F9=[57,60,63,67], BBM9=[56,60,61,65], EB9S=[58,61,65,68], EB7=[55,58,61,65], DB9=[56,60,63,65], FM9=[56,60,63,67];
+  const PROG=[
+    [{v:AB9,b:44,s:0,d:4}],
+    [{v:CM9,b:48,s:0,d:2},{v:F9,b:41,s:2,d:2}],
+    [{v:BBM9,b:46,s:0,d:4}],
+    [{v:EB9S,b:51,s:0,d:2},{v:EB7,b:51,s:2,d:2}],
+    [{v:DB9,b:49,s:0,d:4}],
+    [{v:CM9,b:48,s:0,d:2},{v:FM9,b:41,s:2,d:2}],
+    [{v:BBM9,b:46,s:0,d:4}],
+    [{v:EB9S,b:51,s:0,d:2},{v:EB7,b:51,s:2,d:2}]
+  ];
+  function init(){
+    if(ctx){ if(ctx.state==="suspended") ctx.resume(); return true; }
+    const AC = window.AudioContext||window.webkitAudioContext; if(!AC) return false;
+    ctx = new AC();
+    master = ctx.createGain(); master.gain.value = muted?0:VOL; master.connect(ctx.destination);
+    const delay=ctx.createDelay(1); delay.delayTime.value=.33;
+    const fb=ctx.createGain(); fb.gain.value=.3;
+    const lp=ctx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=2200;
+    const wet=ctx.createGain(); wet.gain.value=.3;
+    delay.connect(lp); lp.connect(fb); fb.connect(delay); lp.connect(wet); wet.connect(master);
+    music=ctx.createGain(); music.gain.value=0; music.connect(master);
+    keys=ctx.createGain(); keys.connect(music);
+    const send=ctx.createGain(); send.gain.value=.22; keys.connect(send); send.connect(delay);
+    noise=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);
+    const nd=noise.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
+    sfx=ctx.createGain(); sfx.gain.value=.55; sfx.connect(master); sfx.connect(delay);
+    document.addEventListener("visibilitychange", ()=>{ if(document.hidden) ctx.suspend(); else ctx.resume(); });
+    return true;
+  }
+  function note(m,t,dur,o={}){
+    const osc=ctx.createOscillator(), env=ctx.createGain();
+    const g=o.gain??.2, att=o.attack??.008;
+    osc.type=o.type||"sine"; osc.frequency.setValueAtTime(mf(m),t);
+    if(o.slide) osc.frequency.exponentialRampToValueAtTime(mf(m+o.slide),t+dur);
+    if(o.hold){
+      env.gain.setValueAtTime(0,t); env.gain.linearRampToValueAtTime(g,t+att);
+      env.gain.setValueAtTime(g,t+Math.max(att,dur-.2)); env.gain.linearRampToValueAtTime(0,t+dur);
+    } else {
+      env.gain.setValueAtTime(.0001,t);
+      env.gain.exponentialRampToValueAtTime(g,t+att);
+      env.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    }
+    let node=osc;
+    if(o.cutoff){ const f=ctx.createBiquadFilter(); f.type="lowpass"; f.frequency.value=o.cutoff; osc.connect(f); node=f; }
+    node.connect(env); env.connect(o.dest||sfx);
+    osc.start(t); osc.stop(t+dur+.05);
+  }
+  function ep(m,t,dur,g){
+    note(m,t,dur,{gain:g,attack:.006,dest:keys});
+    note(m+12,t,Math.min(dur,.35),{gain:g*.35,attack:.003,dest:keys});
+  }
+  function organ(v,t,dur){
+    v.forEach(m=>{
+      note(m,t,dur,{gain:.012,attack:.25,hold:true,dest:keys});
+      note(m+12,t,dur,{gain:.006,attack:.25,hold:true,dest:keys});
+      note(m+19,t,dur,{gain:.003,attack:.25,hold:true,dest:keys});
+    });
+  }
+  function bass(m,t,dur,g){ note(m,t,dur,{type:"triangle",gain:g,attack:.01,cutoff:800,dest:music}); }
+  function kick(t,g){
+    const o=ctx.createOscillator(), e=ctx.createGain();
+    o.frequency.setValueAtTime(120,t); o.frequency.exponentialRampToValueAtTime(45,t+.12);
+    e.gain.setValueAtTime(g,t); e.gain.exponentialRampToValueAtTime(.0001,t+.28);
+    o.connect(e); e.connect(music); o.start(t); o.stop(t+.3);
+  }
+  function noiseHit(t,g,dur,ftype,freq,q){
+    const s=ctx.createBufferSource(); s.buffer=noise;
+    const f=ctx.createBiquadFilter(); f.type=ftype; f.frequency.value=freq; if(q) f.Q.value=q;
+    const e=ctx.createGain(); e.gain.setValueAtTime(g,t); e.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    s.connect(f); f.connect(e); e.connect(music); s.start(t); s.stop(t+dur+.02);
+  }
+  function scheduleBar(t,i){
+    const at=pos=>t+Math.floor(pos/2)*BEAT+(pos%2?BEAT*2/3:0);
+    const row=PROG[i%8], nextRoot=PROG[(i+1)%8][0].b;
+    row.forEach(seg=>{
+      const p0=seg.s*2;
+      organ(seg.v,at(p0),seg.d*BEAT+.05);
+      (seg.d===4?[0,3,6]:[0,3]).forEach((o,k)=>{
+        const dur=(o===0?1.4:(o===6?1.1:.45))*BEAT, g=k===0?.055:.038;
+        seg.v.forEach((m,n)=>ep(m,at(p0+o)+n*.004,dur,g));
+      });
+      bass(seg.b,at(p0),(seg.d===4?1.4:.9)*BEAT,.16);
+      if(seg.d===4){ bass(seg.b+12,at(p0+3),.4*BEAT,.1); bass(seg.b+7,at(p0+5),.4*BEAT,.11); }
+    });
+    bass(nextRoot-1,at(7),.35*BEAT,.1);
+    if(i>=4){
+      kick(at(0),.35); kick(at(5),.22);
+      noiseHit(at(2),.10,.14,"bandpass",1900,.8); noiseHit(at(6),.10,.14,"bandpass",1900,.8);
+      for(let p=0;p<8;p++) noiseHit(at(p),p%2?.016:.028,.04,"highpass",7000);
+      if(i%8===7) noiseHit(at(7),.05,.1,"bandpass",2200,.8);
+    }
+  }
+  function tick(){ while(nextBar < ctx.currentTime+2){ scheduleBar(nextBar,bar++); nextBar+=BAR; } }
+  return {
+    init,
+    isMuted:()=>muted,
+    startMusic(){
+      if(!init()||playing) return; playing=true;
+      const now=ctx.currentTime; nextBar=now+.2; bar=0;
+      music.gain.setValueAtTime(0,now); music.gain.linearRampToValueAtTime(1,now+3);
+      tick(); setInterval(tick,250);
+    },
+    toggle(){
+      muted=!muted;
+      try{ localStorage.setItem("ef5-mudo",muted?"1":"0"); }catch(e){}
+      if(ctx){ master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setTargetAtTime(muted?0:VOL,ctx.currentTime,.05); }
+      return muted;
+    },
+    click(){ if(!ctx) return; note(80,ctx.currentTime,.07,{gain:.08}); },
+    correct(){ if(!ctx) return; const t=ctx.currentTime; [72,75,80,84].forEach((m,i)=>note(m,t+i*.07,.5,{type:"triangle",gain:.16})); },
+    wrong(){ if(!ctx) return; const t=ctx.currentTime; note(55,t,.32,{gain:.18,slide:-3}); note(51,t+.12,.36,{gain:.12}); },
+    phase(){ if(!ctx) return; const t=ctx.currentTime; [68,72,75,80,84].forEach((m,i)=>note(m,t+i*.1,.7,{type:"triangle",gain:.13})); },
+    final(){ if(!ctx) return; const t=ctx.currentTime;
+      [56,60,63,67].forEach(m=>note(m,t,2.8,{type:"triangle",gain:.08,attack:.3,cutoff:1600}));
+      [68,72,75,79,84,87].forEach((m,i)=>note(m,t+.2+i*.09,.9,{type:"triangle",gain:.12}));
+    }
+  };
+})();
+
+function sndUI(){
+  const m=Sound.isMuted();
+  $("bSnd").setAttribute("aria-pressed",String(!m));
+  $("bSnd").setAttribute("aria-label",m?"Som desligado":"Som ligado");
+  $("sndWaves").style.display=m?"none":"";
+  $("sndOff").style.display=m?"":"none";
+  $("sndLabel").textContent=m?"Sem som":"Som";
+}
+$("bSnd").onclick=()=>{ Sound.toggle(); sndUI(); if(!Sound.isMuted()) Sound.click(); };
+sndUI();
 
 const DESAFIOS = [
   { t:"Mande hoje uma mensagem para alguém do ministério que você não vê há um tempo e pergunte como pode orar por essa pessoa.", ref:"Tiago 5:16" },
@@ -345,9 +485,9 @@ const DESAFIOS = [
 const D = DESAFIOS[Math.floor(Math.random()*DESAFIOS.length)];
 $("desafio").innerHTML = `<p>${D.t}</p><span class="ref">${D.ref}</span>`;
 
-$("bStart").onclick = start;
-$("bAgain").onclick = start;
-$("bNext").onclick = next;
+$("bStart").onclick = ()=>{ Sound.init(); Sound.startMusic(); Sound.click(); start(); };
+$("bAgain").onclick = ()=>{ Sound.click(); start(); };
+$("bNext").onclick = ()=>{ Sound.click(); next(); };
 
 document.addEventListener("keydown", e=>{
   if(mode==="q" && !answered){
