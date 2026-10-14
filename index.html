@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Efésios 5 | Até sermos um</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#2A040A; --bg2:#4C0816; --wine:#800020; --ember:#FF4500;
+  --yel:#EBE361; --gold:#FFD700; --ink:#F6EFDF; --soft:rgba(246,239,223,.72);
+  --line:rgba(235,227,97,.45);
+  --cond:"Barlow Condensed","Helvetica Neue","Arial Narrow",Arial,sans-serif;
+  --body:"Barlow","Helvetica Neue",Arial,sans-serif;
+  --script:"Pinyon Script","Great Vibes","Brush Script MT",cursive;
+  color-scheme: dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#2A040A; --bg2:#4C0816; --ink:#F6EFDF; --soft:rgba(246,239,223,.72); --yel:#EBE361;
+  }
+}
+:root[data-theme="dark"]{ --bg:#2A040A; --bg2:#4C0816; --ink:#F6EFDF; --yel:#EBE361; }
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100%;color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.5;
+  background:
+    radial-gradient(120% 70% at 50% 115%, rgba(255,69,0,.55), transparent 60%),
+    radial-gradient(90% 60% at 50% -10%, rgba(128,0,32,.9), transparent 70%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 2px, transparent 2px 7px),
+    linear-gradient(var(--bg2), var(--bg));
+  background-color:var(--bg);
+  background-attachment:fixed;
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.stage{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;max-width:1080px;margin:0 auto;padding:18px clamp(16px,4vw,44px) 16px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line);
+  font-family:var(--cond);font-weight:700;font-size:clamp(14px,1.8vw,19px);letter-spacing:.04em;color:var(--yel);text-transform:uppercase}
+.top em,.foot em{font-family:var(--script);font-style:normal;text-transform:none;font-weight:400;font-size:1.45em;letter-spacing:0;margin-right:.15em}
+.top .mid{color:var(--soft);font-weight:600}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:28px 0}
+.screen{width:100%;max-width:860px}
+.hidden{display:none!important}
+
+.ghost{text-shadow:7px 0 5px rgba(235,227,97,.32),-12px 0 12px rgba(255,69,0,.28),22px 0 22px rgba(235,227,97,.14)}
+.brand{font-family:var(--cond);font-weight:800;color:var(--yel);text-transform:uppercase;line-height:.86;letter-spacing:-.01em;margin:0}
+.brand .um{font-family:var(--script);text-transform:none;font-weight:400;letter-spacing:0;font-size:1.25em;line-height:0;display:inline-block;transform:translateY(.08em);margin-left:.04em}
+
+/* Início */
+.hero{text-align:center}
+.hero .book{font-family:var(--script);color:var(--ink);font-size:clamp(48px,8vw,92px);line-height:1;margin:0 0 6px}
+.hero .brand{font-size:clamp(64px,13vw,150px)}
+.hero p{max-width:34em;margin:26px auto 0;color:var(--soft);font-size:clamp(17px,2vw,20px)}
+.btn{font-family:var(--cond);font-weight:700;font-size:22px;letter-spacing:.03em;text-transform:uppercase;
+  background:var(--yel);color:#3A0610;border:0;border-radius:999px;padding:14px 34px;margin-top:30px;cursor:pointer}
+.btn:hover{background:var(--gold)}
+.btn.ghosty{background:transparent;color:var(--yel);box-shadow:inset 0 0 0 2px var(--yel)}
+.btn.ghosty:hover{background:rgba(235,227,97,.1)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+
+/* Barra de progresso (iconografia da marca) */
+.bar{height:30px;border:3px solid var(--yel);border-radius:999px;padding:4px;position:relative}
+.bar>i{display:block;height:100%;width:0;background:var(--yel);border-radius:999px;transition:width .7s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 18px rgba(235,227,97,.45)}
+.barhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;font-family:var(--cond);font-weight:600;font-size:18px;color:var(--soft)}
+.barhead b{color:var(--yel);font-weight:800;font-size:22px}
+
+/* Abertura de etapa */
+.phase{text-align:center}
+.phase .step{font-family:var(--cond);font-weight:700;font-size:22px;color:var(--soft);margin:0}
+.phase h2{font-family:var(--script);font-weight:400;color:var(--yel);font-size:clamp(64px,11vw,130px);line-height:1.05;margin:4px 0 6px}
+.phase .ref{font-family:var(--cond);font-weight:700;font-size:22px;color:var(--ink);letter-spacing:.04em}
+.phase p{max-width:32em;margin:18px auto 0;color:var(--soft)}
+
+/* Pergunta */
+.qwrap{margin-top:34px}
+.qmeta{font-family:var(--cond);font-weight:600;font-size:18px;color:var(--soft);margin:0 0 6px}
+.qmeta span{color:var(--yel)}
+.q{font-family:var(--cond);font-weight:700;font-size:clamp(28px,4.2vw,44px);line-height:1.08;margin:0 0 24px;color:var(--ink);max-width:24em}
+.opts{display:grid;gap:12px}
+.opt{display:flex;gap:16px;align-items:center;text-align:left;width:100%;cursor:pointer;
+  font-family:var(--body);font-size:clamp(17px,2.1vw,21px);font-weight:500;color:var(--ink);
+  background:rgba(42,4,10,.35);border:2px solid var(--line);border-radius:14px;padding:14px 18px;transition:background .15s,border-color .15s}
+.opt:hover:not(:disabled){border-color:var(--yel);background:rgba(235,227,97,.07)}
+.opt .k{flex:none;font-family:var(--cond);font-weight:800;font-size:20px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--yel);color:var(--yel)}
+.opt.ok{background:var(--yel);border-color:var(--yel);color:#3A0610}
+.opt.ok .k{border-color:#3A0610;color:#3A0610}
+.opt.no{border-color:rgba(255,69,0,.7);opacity:.55;text-decoration:line-through;text-decoration-color:var(--ember)}
+.opt:disabled{cursor:default}
+
+.lt{grid-template-columns:1fr 1fr}
+.lt .opt{justify-content:center;font-family:var(--cond);font-weight:800;font-size:clamp(28px,4vw,40px);text-transform:uppercase;padding:22px}
+.lt .opt.luz{border-color:var(--yel);color:var(--yel)}
+.lt .opt.trevas{background:rgba(0,0,0,.35);border-color:rgba(246,239,223,.35);color:var(--soft)}
+.lt .opt.ok{background:var(--yel);color:#3A0610}
+.lt .opt .k{display:none}
+
+.fb{margin-top:20px;padding:16px 20px;border-left:4px solid var(--yel);background:rgba(0,0,0,.22);border-radius:0 12px 12px 0}
+.fb.try{border-left-color:var(--ember)}
+.fb h3{margin:0 0 4px;font-family:var(--cond);font-weight:800;font-size:24px;color:var(--yel)}
+.fb.try h3{color:#FF7A45}
+.fb p{margin:0;color:var(--ink)}
+.fb .ref{display:block;margin-top:6px;font-family:var(--cond);font-weight:600;color:var(--soft);font-size:17px}
+.next{margin-top:18px}
+
+/* Final */
+.final{text-align:center}
+.final .brand{font-size:clamp(70px,14vw,160px)}
+.final blockquote{max-width:30em;margin:28px auto 0;font-size:clamp(17px,2vw,21px);color:var(--ink)}
+.final cite{display:block;margin-top:6px;font-style:normal;font-family:var(--cond);font-weight:700;color:var(--yel)}
+.final .score{margin:22px auto 0;color:var(--soft);max-width:30em}
+.final .pts{display:block;font-family:var(--cond);font-weight:800;font-size:48px;color:var(--yel);line-height:1;margin-bottom:8px}
+.desafio{max-width:34em;margin:26px auto 0;text-align:left;border:2px solid var(--yel);border-radius:18px;padding:18px 22px}
+.desafio h3{margin:0 0 4px;font-family:var(--script);font-weight:400;color:var(--yel);font-size:44px;line-height:1.1}
+.desafio p{margin:0}
+.reveal{animation:reveal 1.4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes reveal{from{opacity:0;filter:blur(14px);letter-spacing:.2em}to{opacity:1;filter:blur(0);letter-spacing:-.01em}}
+
+.foot{display:flex;justify-content:space-between;align-items:center;gap:14px;padding-top:12px;border-top:1px solid var(--line);
+  font-family:var(--cond);font-weight:700;color:var(--yel);font-size:clamp(14px,1.8vw,18px);text-transform:uppercase;letter-spacing:.04em}
+.foot .as1{display:flex;align-items:center;gap:10px}
+.foot .as1 b{font-weight:800;font-size:26px;letter-spacing:-.02em}
+.mini{width:96px;height:18px;border:2px solid var(--yel);border-radius:999px;padding:3px}
+.mini>i{display:block;height:100%;width:0;background:var(--yel);border-radius:999px;transition:width .7s}
+.hint{color:var(--soft);font-family:var(--body);text-transform:none;letter-spacing:0;font-weight:400;font-size:14px}
+
+@media (max-width:620px){
+  .lt .opt{font-size:26px;padding:18px 10px}
+  .top .mid,.hint{display:none}
+  body{font-size:17px}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <header class="top">
+    <span><em>Rua</em> dos Gerânios, 52</span>
+    <span class="mid">Connect Natal Conference'26</span>
+    <span>17&amp;18 de <em>Outubro</em></span>
+  </header>
+
+  <main>
+    <!-- Início -->
+    <section class="screen hero" id="sStart">
+      <p class="book">Efésios 5</p>
+      <h1 class="brand ghost">Até sermos <span class="um">um</span></h1>
+      <p>Um jogo rapidinho pra fixar o devocional de hoje. São 3 etapas e 16 perguntas. Ninguém sai do jogo: errou, tenta de novo. Quanto mais acertos de primeira, mais pontos.</p>
+      <button class="btn" id="bStart">Começar</button>
+    </section>
+
+    <!-- Jogo -->
+    <section class="screen hidden" id="sGame">
+      <div class="barhead"><span id="pts">0 pontos</span><b id="pct">0%</b></div>
+      <div class="bar" role="progressbar" aria-label="Progresso do grupo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
+
+      <div id="phaseCard" class="phase qwrap"></div>
+
+      <div id="qCard" class="qwrap hidden">
+        <p class="qmeta" id="qMeta"></p>
+        <h2 class="q" id="qText"></h2>
+        <div class="opts" id="opts"></div>
+        <div id="fb" aria-live="polite"></div>
+        <button class="btn next hidden" id="bNext">Próxima</button>
+      </div>
+    </section>
+
+    <!-- Final -->
+    <section class="screen final hidden" id="sEnd">
+      <h2 class="brand ghost reveal">Até sermos <span class="um">um</span></h2>
+      <blockquote>"Para que todos sejam um, como tu, ó Pai, o és em mim, e eu, em ti; que também eles sejam um em nós, para que o mundo creia que tu me enviaste."<cite>João 17:21</cite></blockquote>
+      <p class="score" id="score"></p>
+      <div class="desafio">
+        <h3>Desafio</h3>
+        <p>Antes de sair, procure alguém com quem você ainda tem pouca intimidade. Ore por essa pessoa e pergunte como você pode servi-la nesta conferência.</p>
+      </div>
+      <p class="score">Tira um print desta tela e manda no grupo dos voluntários!</p>
+      <button class="btn ghosty" id="bAgain">Jogar de novo</button>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span class="as1"><b>AS1</b><span class="mini"><i id="miniFill"></i></span></span>
+    
+    <span>Efésios <em>cinco</em></span>
+  </footer>
+</div>
+
+<script>
+const PHASES = [
+  { nome:"Imitadores", ref:"Efésios 5:1-2", tipo:"mc",
+    intro:"Imitamos a Deus porque já somos filhos amados. É aqui que a unidade começa.",
+    itens:[
+      { q:"Em Efésios 5:1, Paulo nos chama a ser imitadores de Deus como o quê?",
+        opts:["Servos fiéis","Soldados valentes","Filhos amados","Discípulos sábios"], c:2,
+        exp:"Imitamos porque já somos filhos, recebidos pela graça. A identidade vem antes da conduta.", ref:"Efésios 5:1; 2:8-9" },
+      { q:"Qual é o modelo de amor que Paulo nos manda seguir?",
+        opts:["Cristo, que se entregou por nós","O amor entre amigos","O amor que sentimos no culto","O amor que recebemos dos pais"], c:0,
+        exp:"Cristo se entregou como oferta e sacrifício a Deus, em cheiro suave. O amor que une é o amor que se entrega.", ref:"Efésios 5:2" },
+      { q:"O \"pois\" de Efésios 5:1 nos liga a qual instrução de Efésios 4:32?",
+        opts:["Jejuar mais vezes","Ser benignos e perdoar uns aos outros","Afastar-se dos irmãos difíceis","Falar menos nas reuniões"], c:1,
+        exp:"Perdoar como Deus nos perdoou em Cristo. Não existe unidade sem perdão.", ref:"Efésios 4:32" },
+      { q:"Segundo Paulo, o que as nossas atitudes podem causar ao Espírito Santo?",
+        opts:["Cansá-lo","Diminuí-lo","Nada, Ele não sente","Entristecê-lo"], c:3,
+        exp:"O Espírito é uma Pessoa e pode ser entristecido. Quem ama a Deus abre mão do que O entristece.", ref:"Efésios 4:30" }
+    ]},
+  { nome:"Filhos da luz", ref:"Efésios 5:3-14", tipo:"lt",
+    intro:"Luz ou trevas? Vai aparecer uma atitude e você decide de que lado ela está.",
+    itens:[
+      { q:"Bondade com quem pensa diferente de mim", c:"luz", exp:"O fruto da luz está em toda bondade.", ref:"Efésios 5:9" },
+      { q:"Cobiçar o que é do outro", c:"trevas", exp:"A avareza nem deve ser nomeada entre os santos, e Paulo a chama de idolatria.", ref:"Efésios 5:3-5" },
+      { q:"Falar a verdade, mesmo quando custa", c:"luz", exp:"Verdade faz parte do fruto. E falamos a verdade porque somos membros uns dos outros.", ref:"Efésios 5:9; 4:25" },
+      { q:"Piadas e conversas indecentes", c:"trevas", exp:"No lugar delas, Paulo pede ações de graças.", ref:"Efésios 5:4" },
+      { q:"Agradecer a Deus por tudo", c:"luz", exp:"Dar sempre graças por tudo, em nome de Jesus, é marca de quem é cheio do Espírito.", ref:"Efésios 5:4, 20" },
+      { q:"Deixar-se levar por palavras vãs que enganam", c:"trevas", exp:"\"Ninguém vos engane com palavras vãs.\"", ref:"Efésios 5:6" },
+      { q:"Agir com justiça, mesmo quando ninguém vê", c:"luz", exp:"Justiça é o terceiro elemento do fruto. Bondade, justiça e verdade andam juntas.", ref:"Efésios 5:9" }
+    ]},
+  { nome:"A noiva", ref:"Efésios 5:18-27", tipo:"mc",
+    intro:"Cheios do Espírito, adorando juntos, esperando a volta do Noivo.",
+    itens:[
+      { q:"Complete: \"Não vos embriagueis com vinho, em que há contenda, mas enchei-vos...\"",
+        opts:["de coragem","do Espírito","de sabedoria","de alegria"], c:1,
+        exp:"No grego é um chamado contínuo: continuem sendo cheios. Uma vida inteira dependente do Espírito.", ref:"Efésios 5:18" },
+      { q:"Como Paulo descreve a igreja cheia do Espírito?",
+        opts:["Cada um adorando sozinho","Disputando quem tem mais dons","Falando entre si com salmos, hinos e cânticos, sujeitando-se uns aos outros","Evitando conversar sobre fé"], c:2,
+        exp:"A adoração é comunitária, e a prova dela é a submissão mútua no temor de Deus.", ref:"Efésios 5:19-21" },
+      { q:"Quem purifica a igreja para apresentá-la sem mácula nem ruga?",
+        opts:["Cristo, que se entregou por ela","O nosso próprio esforço","Os líderes da igreja","O tempo"], c:0,
+        exp:"As vestes brancas são presente da graça. Cristo santifica a igreja pela lavagem da água, pela Palavra.", ref:"Efésios 5:25-27" },
+      { q:"E o que faz quem tem a esperança da volta de Cristo?",
+        opts:["Espera sem se preocupar","Purifica-se a si mesmo","Tenta adivinhar a data","Se afasta do mundo e da igreja"], c:1,
+        exp:"A noiva também se prepara. Esperar não é ficar parado: é viver em santidade.", ref:"1 João 3:3; Apocalipse 19:7-8" },
+      { q:"Quantas noivas Cristo vai buscar quando voltar?",
+        opts:["Uma por denominação","Uma por cidade","Cada cristão é uma noiva","Uma só: a igreja, o Seu corpo"], c:3,
+        exp:"Há um só corpo e um só Espírito. Se seremos uma noiva naquele dia, precisamos aprender a ser um desde já.", ref:"Efésios 4:4; 5:32" }
+    ]}
+];
+
+const TOTAL = PHASES.reduce((n,p)=>n+p.itens.length,0);
+const $ = id => document.getElementById(id);
+let ph=0, it=0, done=0, firstTry=0, missed=false, misses=0, pts=0, answered=false, mode="start";
+
+function show(id){ ["sStart","sGame","sEnd"].forEach(s=>$(s).classList.toggle("hidden", s!==id)); }
+function setBar(){
+  const p = Math.round(done/TOTAL*100);
+  $("barFill").style.width = p+"%"; $("miniFill").style.width = p+"%";
+  $("pct").textContent = p+"%"; $("bar").setAttribute("aria-valuenow", p);
+}
+function phaseIntro(){
+  mode="phase";
+  const P = PHASES[ph];
+  $("qCard").classList.add("hidden");
+  const card = $("phaseCard"); card.classList.remove("hidden");
+  card.innerHTML = `<p class="step">Etapa ${ph+1} de ${PHASES.length}</p>
+    <h2>${P.nome}</h2><span class="ref">${P.ref}</span><p>${P.intro}</p>
+    <button class="btn" id="bPhase">Começar etapa</button>`;
+  $("bPhase").onclick = renderQ; $("bPhase").focus();
+}
+function renderQ(){
+  mode="q"; answered=false; missed=false; misses=0;
+  const P = PHASES[ph], Q = P.itens[it];
+  $("phaseCard").classList.add("hidden"); $("qCard").classList.remove("hidden");
+  $("qMeta").innerHTML = `<span>${P.nome}</span>, ${it+1} de ${P.itens.length}`;
+  $("qText").textContent = Q.q;
+  $("fb").innerHTML = ""; $("bNext").classList.add("hidden");
+  const box = $("opts"); box.innerHTML = "";
+  box.className = "opts" + (P.tipo==="lt" ? " lt" : "");
+  const list = P.tipo==="lt" ? [["luz","Luz"],["trevas","Trevas"]] : Q.opts.map((t,i)=>[i,t]);
+  list.forEach(([val,label],i)=>{
+    const b = document.createElement("button");
+    b.className = "opt" + (P.tipo==="lt" ? " "+val : "");
+    b.dataset.v = val;
+    b.innerHTML = `<span class="k">${i+1}</span><span>${label}</span>`;
+    b.onclick = ()=>answer(b);
+    box.appendChild(b);
+  });
+  box.querySelector(".opt").focus();
+}
+function answer(b){
+  if(answered || b.disabled) return;
+  const P = PHASES[ph], Q = P.itens[it];
+  const right = P.tipo==="lt" ? b.dataset.v===Q.c : Number(b.dataset.v)===Q.c;
+  if(right){
+    answered = true; b.classList.add("ok");
+    document.querySelectorAll("#opts .opt").forEach(o=>o.disabled=true);
+    if(!missed) firstTry++;
+    const gain = misses===0 ? 10 : (misses===1 ? 6 : 3); pts += gain; $("pts").textContent = pts+" pontos";
+    done++; setBar();
+    $("fb").innerHTML = `<div class="fb"><h3>${missed ? "Agora foi! +"+gain : "Isso! +"+gain}</h3><p>${Q.exp}</p><span class="ref">${Q.ref}</span></div>`;
+    const last = it===P.itens.length-1 && ph===PHASES.length-1;
+    $("bNext").textContent = last ? "Ver o final" : (it===P.itens.length-1 ? "Próxima etapa" : "Próxima");
+    $("bNext").classList.remove("hidden"); $("bNext").focus();
+  } else {
+    missed = true; misses++; b.classList.add("no"); b.disabled = true;
+    $("fb").innerHTML = `<div class="fb try"><h3>Quase</h3><p>Releia com calma e tente de novo.</p></div>`;
+  }
+}
+function next(){
+  const P = PHASES[ph];
+  if(it < P.itens.length-1){ it++; renderQ(); return; }
+  if(ph < PHASES.length-1){ ph++; it=0; phaseIntro(); return; }
+  finish();
+}
+function finish(){
+  mode="end"; show("sEnd");
+  const t = $("sEnd").querySelector(".reveal"); t.classList.remove("reveal"); void t.offsetWidth; t.classList.add("reveal");
+  const rest = TOTAL-firstTry;
+  $("score").innerHTML = `<b class="pts">${pts} de ${TOTAL*10} pontos</b>` + (rest===0
+    ? `Você acertou as ${TOTAL} de primeira!`
+    : `Você acertou ${firstTry} de ${TOTAL} de primeira. As outras ${rest} vieram na insistência, e isso também conta.`);
+  $("bAgain").focus();
+}
+function start(){ ph=0; it=0; done=0; firstTry=0; pts=0; $("pts").textContent="0 pontos"; setBar(); show("sGame"); phaseIntro(); }
+
+$("bStart").onclick = start;
+$("bAgain").onclick = start;
+$("bNext").onclick = next;
+
+document.addEventListener("keydown", e=>{
+  if(mode==="q" && !answered){
+    const opts = [...document.querySelectorAll("#opts .opt")];
+    let idx = -1;
+    if(/^[1-4]$/.test(e.key)) idx = Number(e.key)-1;
+    if(PHASES[ph].tipo==="lt"){ if(e.key.toLowerCase()==="l") idx=0; if(e.key.toLowerCase()==="t") idx=1; }
+    if(opts[idx]){ e.preventDefault(); answer(opts[idx]); }
+  } else if(e.key==="Enter" && mode==="q" && answered && document.activeElement!==$("bNext")){ next(); }
+});
+</script>
+</body>
+</html>
